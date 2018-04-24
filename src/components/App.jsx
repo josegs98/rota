@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Calendar from 'react-big-calendar';
 import moment from 'moment';
-import { Panel, Grid, Row, Col, Button, Modal } from 'react-bootstrap';
+import { Panel, Grid, Row, Col, Button, Modal, FormGroup } from 'react-bootstrap';
 
 
 import "react-big-calendar/lib/css/react-big-calendar.css";
@@ -22,7 +22,9 @@ class App extends React.Component {
                     start: new Date(),
                     end: new Date(moment().add(1, "days")),
                     title: "Some title",
-                    show: false
+                    show: false,
+                    fecha_inicial: null,
+                    fecha_final: null
                 }
             ]
         };
@@ -37,6 +39,7 @@ class App extends React.Component {
     }
 
     render() {
+        console.log("FECHA INICIAL: ", this.state.fecha_inicial, "FECHA FINAL: ", this.state.fecha_final);
         return (
             <Grid>
                 <Panel>
@@ -45,7 +48,7 @@ class App extends React.Component {
                     </Panel.Heading>
                     <Panel.Body>
                         <Row>
-                            <Button bsStyle="info" onClick={this.handleShow}>
+                            {/*<Button bsStyle="info" onClick={this.handleShow}>
                                 Modal
                             </Button>
                             <Modal show={this.state.show} onHide={this.handleClose}>
@@ -53,8 +56,37 @@ class App extends React.Component {
                                     <Modal.Title>Modal heading</Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body>
-                                    <h4>Automatizar</h4>
-                                    <label htmlFor="">Fecha de entrada: </label>&nbsp;<input type="date"/>
+                                    <h4>Planear horario</h4>
+                                    <label htmlFor="">Fecha inicial: </label>&nbsp;<input type="date" onChange={event=>this.setState({fecha_inicial:event.target.value})}/>
+                                    &nbsp;
+                                    <label htmlFor="">Fecha final: </label>&nbsp;<input type="date" onChange={event=>this.setState({fecha_final:event.target.value})}/>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button bsStyle="primary" onClick={this.handleClose}>Aceptar</Button>
+                                </Modal.Footer>
+                            </Modal>*/}
+                            <Button bsStyle="info" onClick={this.handleShow}>
+                                Crear tarea
+                            </Button>
+                            <Modal show={this.state.show} onHide={this.handleClose}>
+                                <Modal.Header closeButton>
+                                    <Modal.Title>Nueva tarea</Modal.Title>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <form>
+                                        <FormGroup>
+                                            <label htmlFor="">Titulo de la tarea</label>
+                                            <input type="text" name="" placeholder="Titulo"/>
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <label htmlFor="">Descripción tarea:</label>
+                                            <textarea name="" id="" ></textarea>
+                                        </FormGroup>
+                                        <FormGroup>
+                                            <label htmlFor="">Duración</label>
+                                            <input type="number" placeholder="Duración"/>
+                                        </FormGroup>
+                                    </form>
                                 </Modal.Body>
                             </Modal>
                         </Row>
