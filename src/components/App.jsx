@@ -23,8 +23,12 @@ class App extends React.Component {
                     end: new Date(moment().add(1, "days")),
                     title: "Some title",
                     show: false,
-                    fecha_inicial: null,
-                    fecha_final: null
+                    fecha_tarea:null,
+                    descripción_tarea:null,
+                    titulo_tarea:null,
+                    duracion_tarea:null
+                    //fecha_inicial: null,
+                    //fecha_final: null
                 }
             ]
         };
@@ -36,6 +40,10 @@ class App extends React.Component {
 
     handleShow() {
         this.setState({ show: true });
+    }
+
+    tarea(){
+        
     }
 
     render() {
@@ -73,19 +81,28 @@ class App extends React.Component {
                                     <Modal.Title>Nueva tarea</Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body>
-                                    <form>
+                                    <form onSubmit>
                                         <FormGroup>
                                             <label htmlFor="">Titulo de la tarea</label>
-                                            <input type="text" name="" placeholder="Titulo"/>
+                                            <br/>
+                                            <input type="text" name="" placeholder="Título" onChange={event=>this.setState({titulo_tarea:event.target.value})}/>
                                         </FormGroup>
                                         <FormGroup>
-                                            <label htmlFor="">Descripción tarea:</label>
-                                            <textarea name="" id="" ></textarea>
+                                            <label htmlFor="" style={{verticalAlign:'middle'}}>Descripción tarea:</label>
+                                            <br/>
+                                            <textarea name="" id="" placeholder="Descripción" onChange={event=>this.setState({descripción_tarea:event.target.value})}></textarea>
                                         </FormGroup>
                                         <FormGroup>
                                             <label htmlFor="">Duración</label>
-                                            <input type="number" placeholder="Duración"/>
+                                            <br/>
+                                            <input type="number" placeholder="Duración" onChange={event=>this.setState({duracion_tarea:event.target.value})}/>
                                         </FormGroup>
+                                        <FormGroup>
+                                            <label htmlFor="">Fecha </label>
+                                            <br/>
+                                            <input type="date" onChange={event=>this.setState({fecha_tarea:event.target.value})}/>
+                                        </FormGroup>
+                                        <Button type="submit" bsStyle="primary">Aceptar</Button>
                                     </form>
                                 </Modal.Body>
                             </Modal>
