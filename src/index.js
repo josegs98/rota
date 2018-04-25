@@ -1,13 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from "./components/App";
-import Menu from "./components/Menu";
+import Routing from './routing';
+
 
 ReactDOM.render(
     <div>
-        <Menu/>
         <div style={{ backgroundColor: '#DDDDDD' }}>
-            <App />
+            <Routing/>
         </div>
     </div>
     , document.getElementById('root')
