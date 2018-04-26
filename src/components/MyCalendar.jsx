@@ -2,18 +2,18 @@ import React, { Component } from 'react';
 import Calendar from 'react-big-calendar';
 import moment from 'moment';
 import { Panel, Grid, Row } from 'react-bootstrap';
-import "react-big-calendar/lib/css/react-big-calendar.css";
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 import ModalTarea from './ModalTarea';
 
 Calendar.setLocalizer(Calendar.momentLocalizer(moment));
 
 var calendarStyle = {
-    height: "100vh",
-    margin: "10px"
+    height: '100vh',
+    margin: '10px'
 }
 
-class App extends Component {
+class MyCalendar extends Component {
     constructor(props, context) {
         super(props, context);
         this.handleShow = this.handleShow.bind(this);
@@ -23,8 +23,8 @@ class App extends Component {
             events: [
                 {
                     start: new Date(),
-                    end: new Date(moment().add(1, "days")),
-                    title: "Some title",
+                    end: new Date(moment().add(1, 'days')),
+                    title: 'Some title',
                     show: false,
                     fecha_tarea: null,
                     descripción_tarea: null,
@@ -47,7 +47,6 @@ class App extends Component {
 
     render() {
         return (
-            <div>
                 <Grid>
                     <Panel>
                         <Panel.Body>
@@ -57,7 +56,7 @@ class App extends Component {
                             <Row>
                                 <Calendar
                                     defaultDate={new Date()}
-                                    defaultView="month"
+                                    defaultView='month'
                                     events={this.state.events}
                                     style={calendarStyle}
                                 />
@@ -66,10 +65,9 @@ class App extends Component {
 
                     </Panel>
                 </Grid>
-            </div>
 
         );
     }
 }
 
-export default App;
+export default MyCalendar;

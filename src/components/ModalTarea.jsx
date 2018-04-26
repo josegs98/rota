@@ -35,7 +35,7 @@ class ModalTarea extends Component {
     render() {
         return (
             <Col md={3}>
-                <Button bsStyle="info" onClick={this.handleShow}>
+                <Button bsStyle='info' onClick={this.handleShow}>
                     Crear tarea
                 </Button>
                 <Modal show={this.state.show} onHide={this.handleClose}>
@@ -44,33 +44,33 @@ class ModalTarea extends Component {
                     </Modal.Header>
                     <Modal.Body>
                         <Form inline onSubmit={this.submitTarea}>
-                            <div className="row">
+                            <div className='row'>
                                 <Col md={6}>
-                                    <label htmlFor="">Titulo de la tarea</label>
-                                    <input type="text" name="" placeholder="Título" onChange={event => this.setState({ titulo_tarea: event.target.value })} />
+                                    <label htmlFor=''>Titulo de la tarea</label>
+                                    <input type='text' name='' placeholder='Título' onChange={event => this.setState({ titulo_tarea: event.target.value })} />
                                 </Col>
 
                                 <Col mdOffset={6}>
-                                    <label htmlFor="">Descripción</label>
+                                    <label htmlFor=''>Descripción</label>
                                     <br/>
-                                    <textarea name="" id="" placeholder="Descripción" onChange={event => this.setState({ descripción_tarea: event.target.value })}></textarea>
+                                    <textarea name='' id='' placeholder='Descripción' onChange={event => this.setState({ descripción_tarea: event.target.value })}></textarea>
                                 </Col>
                             </div>
-                            <div className="row">
+                            <div className='row'>
                                 <Col md={3}>
-                                    <label htmlFor="">Duración</label>
+                                    <label htmlFor=''>Duración</label>
                                     <br/>
-                                    <input type="number" placeholder="Duración" onChange={event => this.setState({ duracion_tarea: event.target.value })} />
+                                    <input type='number' placeholder='Duración' onChange={event => this.setState({ duracion_tarea: event.target.value })} />
                                 </Col>
 
                                 <Col mdOffset={6}>
-                                    <label htmlFor="">Fecha </label>
+                                    <label htmlFor=''>Fecha </label>
                                     <br/>
-                                    <input type="date" onChange={event => this.setState({ fecha_tarea: event.target.value })} />
+                                    <input type='date' onChange={event => this.setState({ fecha_tarea: event.target.value })} />
                                 </Col>
                             </div>
                             <br/>
-                            <Button type="submit" bsStyle="primary">Aceptar</Button>
+                            <Button type='submit' bsStyle='primary'>Aceptar</Button>
                         </Form>
                     </Modal.Body>
                 </Modal>
