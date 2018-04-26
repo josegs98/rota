@@ -16,8 +16,6 @@ var calendarStyle = {
 class MyCalendar extends Component {
     constructor(props, context) {
         super(props, context);
-        this.handleShow = this.handleShow.bind(this);
-        this.handleClose = this.handleClose.bind(this);
 
         this.state = {
             events: [
@@ -25,46 +23,31 @@ class MyCalendar extends Component {
                     start: new Date(),
                     end: new Date(moment().add(1, 'days')),
                     title: 'Some title',
-                    show: false,
-                    fecha_tarea: null,
-                    descripción_tarea: null,
-                    titulo_tarea: null,
-                    duracion_tarea: null
-                    //fecha_inicial: null,
-                    //fecha_final: null
                 }
             ]
         };
     }
 
-    handleClose() {
-        this.setState({ show: false });
-    }
-
-    handleShow() {
-        this.setState({ show: true });
-    }
-
     render() {
         return (
-                <Grid>
-                    <Panel>
-                        <Panel.Body>
-                            <Row>
-                                <ModalTarea />
-                            </Row>
-                            <Row>
-                                <Calendar
-                                    defaultDate={new Date()}
-                                    defaultView='month'
-                                    events={this.state.events}
-                                    style={calendarStyle}
-                                />
-                            </Row>
-                        </Panel.Body>
+            <Grid>
+                <Panel>
+                    <Panel.Body>
+                        <Row>
+                            <ModalTarea />
+                        </Row>
+                        <Row>
+                            <Calendar
+                                defaultDate={new Date()}
+                                defaultView='month'
+                                events={this.state.events}
+                                style={calendarStyle}
+                            />
+                        </Row>
+                    </Panel.Body>
 
-                    </Panel>
-                </Grid>
+                </Panel>
+            </Grid>
 
         );
     }
