@@ -1,21 +1,21 @@
 import React, { Component } from 'react';
-import MyCalendar from './MyCalendar'
-import Login from './Login';
-import { Nav, NavItem, MenuItem, NavDropdown } from 'react-bootstrap';
+import Team from './Team';
+import MyCalendar from './MyCalendar';
+import { Nav, NavItem, MenuItem, NavDropdown, Button } from 'react-bootstrap';
 import history from '../history';
 
 function CambiarPagina(props) {
     const paginaActual = props.activePage;
-    if (paginaActual === 'login') {
-        return <Login />
+    if (paginaActual === 'team'){
+        return <Team/>
+    }else{
+        return <MyCalendar/>
     }
-    return <MyCalendar />
 }
-
-var mainStyle={
-    backgroundColor: '#DDDDDD',
-    height:'100%'
-}
+ var menuStyle={
+    backgroundColor: '#F8F8F8',
+    borderColor: '#E7E7E7'
+ }
 
 class Main extends Component {
 
@@ -28,35 +28,37 @@ class Main extends Component {
     }
 
     pushRoute(ruta) {
+        console.log('Estas en pushRoute ',ruta);
         history.push(ruta);
+        //history.go();
     }
 
     handleItemClick = (name) => this.setState({ activeItem: name })
 
     render() {
-
         return (
             <div>
                 <div>
-                    <Nav bsStyle='tabs'  >
+                    <Nav bsStyle='tabs' style={menuStyle}>
                         <NavItem name='calendar' onClick={(event) => this.handleItemClick(event.target.name)}>
                             Calendar
                         </NavItem>
-                        <NavItem name='campogravitatoriao' title='Item' onClick={(event) => this.handleItemClick(event.target.name)}>
+                        <NavItem name='team' title='Item' onClick={(event) => this.handleItemClick(event.target.name)}>
                             Team
                         </NavItem>
-                        <NavItem name='login' onClick={(event) => this.handleItemClick(event.target.name)}>
+                        {/*<NavItem name='login' onClick={(event) => this.handleItemClick(event.target.name)}>
                             Login
-                        </NavItem>
+                        </NavItem>*/}
                         <NavDropdown title='Settings' id='nav-dropdown'>
                             <MenuItem>Change multiplier</MenuItem>
                             <MenuItem >Auto-schedule</MenuItem>
                             <MenuItem divider />
-                            <MenuItem >Logout</MenuItem>
+                            <MenuItem onClick={()=>this.pushRoute('/login')}>Logout</MenuItem>
                         </NavDropdown>
                     </Nav>
                 </div>
-                <div style={mainStyle}>
+                <div>
+                    <Button bsStyle='info' onClick={()=>this.pushRoute('/login')}>Logout</Button>
                     <CambiarPagina activePage={this.state.activeItem} />
                 </div>
             </div>
