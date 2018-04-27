@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import Team from './Team';
 import MyCalendar from './MyCalendar';
-import { Nav, NavItem, MenuItem, NavDropdown } from 'react-bootstrap';
+import { Nav, NavItem, MenuItem, NavDropdown, Button } from 'react-bootstrap';
 import history from '../history';
+import ModalHoras from './ModalHoras';
 
 function CambiarPagina(props) {
     const paginaActual = props.activePage;
@@ -23,8 +24,10 @@ class Main extends Component {
         super(props);
         console.log(this.props.history);
         this.state = {
+            show:false,
             activeItem: 'home'
         }
+        this.changeModalState = this.changeModalState.bind(this);
     }
 
     pushRoute(ruta) {
@@ -33,8 +36,16 @@ class Main extends Component {
         //history.go();
     }
 
+    mostrarModal(){
+        this.setState({show:true});
+    }
+
     handleItemClick = (name) => this.setState({ activeItem: name })
 
+    changeModalState() {
+        console.log('LOL',this.state.show)
+        this.setState({show: false});
+    }
     render() {
         return (
             <div>
@@ -50,14 +61,17 @@ class Main extends Component {
                             Login
                         </NavItem>*/}
                         <NavDropdown title='Settings' id='nav-dropdown'>
-                            <MenuItem>Change multiplier</MenuItem>
+                            <MenuItem onSelect={()=>this.setState({show:true})}>Change multiplier</MenuItem>
                             <MenuItem >Auto-schedule</MenuItem>
                             <MenuItem divider />
-                            <MenuItem onClick={()=>this.pushRoute('/login')}>Logout</MenuItem>
+                            <MenuItem onSelect={()=>this.pushRoute('/login')}>Logout</MenuItem>
                         </NavDropdown>
+                        <ModalHoras show={this.state.show} changeModalState={this.changeModalState}/>
+
                     </Nav>
                 </div>
                 <div>
+                    <Button onClick={()=>this.setState({show:true})}>hjsdf</Button>
                     <CambiarPagina activePage={this.state.activeItem} />
                 </div>
             </div>
