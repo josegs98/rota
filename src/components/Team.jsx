@@ -3,6 +3,7 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import cellEditFactory from 'react-bootstrap-table2-editor';
 import * as workerAction from '../actions/AddWorker';
 import {connect} from 'react-redux';
+import paginationFactory from 'react-bootstrap-table2-paginator';
 import { Grid, Col, Button, Panel } from 'react-bootstrap';
 
 var styledPanel = {
@@ -12,7 +13,7 @@ var styledPanel = {
 const allWorkersColumns = [{
     dataField: 'dni',
     text: 'Product ID',
-    formatter: (cell, row) => <Button bsStyle='info' onClick={() => this.props.createWorker(row.id)}>Remove from On Call Pool</Button>
+    //formatter: (cell, row) => <Button bsStyle='info' onClick={() => this.props.createWorker(row.id)}>Remove from On Call Pool</Button>
 }, {
     dataField: 'name',
     text: 'Product Name'
@@ -85,9 +86,17 @@ var workerDefault={
 }
 
 class Team extends Component {
+    constructor(props){
+        super(props);
+        this.mostrarWorkers=this.mostrarWorkers.bind(this);
+    }
 
     submitWorker(input){
         this.props.createWorkerLocal(input)
+    }
+
+    mostrarWorkers(){
+        console.log('Mostrar workers ',this.props.worker);
     }
 
     render() {
@@ -96,12 +105,14 @@ class Team extends Component {
                 <Panel style={styledPanel}>
                     <Panel.Body>
                         <Button onClick={()=> {this.submitWorker(workerDefault)}}>Añadir trabajador</Button>
+                        <Button onClick={()=> {this.mostrarWorkers()}}>Mostrar trabajador</Button>
                         <Col xsOffset={1} xs={5}>
                             <BootstrapTable
                                 keyField='dni'
-                                data={allWorkers}
+                                data={this.props.worker}
                                 columns={allWorkersColumns}
                                 cellEdit={cellEditFactory({ mode: 'click' })}
+                                pagination={ paginationFactory() }
                             />
                         </Col>
                         <Col xsOffset={1} xs={5}>
@@ -118,9 +129,10 @@ class Team extends Component {
         );
     }
 }
-const mapStateToProps=(state, workerLocal)=>{
+const mapStateToProps=(state, ownProps)=>{
+    console.log('state',state)
     return{
-        workerLocal:state.worker
+        worker:state.workers
     }
 }
 
