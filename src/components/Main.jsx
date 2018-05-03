@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Team from './Team';
 import MyCalendar from './MyCalendar';
-import { Nav, NavItem, MenuItem, NavDropdown, Button } from 'react-bootstrap';
+import { Nav, NavItem, MenuItem, NavDropdown } from 'react-bootstrap';
 import history from '../history';
 import ModalHoras from './ModalHoras';
 import Settings from './Settings';

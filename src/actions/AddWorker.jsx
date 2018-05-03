@@ -2,7 +2,7 @@ export const createWorker = (worker) => {
     // Return action
     return {
       // Unique identifier
-      type: 'WORKER',
+      type: 'CREATE_WORKER',
       // Payload
       worker: worker
     }

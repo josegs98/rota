@@ -2,11 +2,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Routing from './routing';
 
+import { Provider } from 'react-redux';
+import createdStore from './store/createdStore';
+
+const store = createdStore();
+
 ReactDOM.render(
-    <div>
-        <div>
-            <Routing/>
-        </div>
-    </div>
+    <Provider store={store}>
+        <Routing />
+    </Provider>
     , document.getElementById('root')
 );
