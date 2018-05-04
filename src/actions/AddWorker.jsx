@@ -6,6 +6,15 @@ export const createWorker = (worker) => {
       // Payload
       worker: worker
     }
-  };
+};
 
+export const deleteWorker = (dni) => {
+  // Return action
+  return {
+    // Unique identifier
+    type: 'DELETE_WORKER',
+    // Payload
+    dni
+  }
+};
 
