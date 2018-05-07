@@ -1,3 +1,12 @@
+
+
+export const insertAllWorkers = (allWorker)=>{
+  return{
+      type:'ALL_WORKERS',
+      allWorkers: allWorker
+  }
+}
+
 export const createWorker = (worker) => {
     // Return action
     return {
@@ -17,4 +26,11 @@ export const deleteWorker = (dni) => {
     dni
   }
 };
+
+export const deleteFromAllWorkers=(dniallworker) => {
+  return{
+    type:'DELETE_ALLWORKERS',
+    dniallworker
+  }
+}
 

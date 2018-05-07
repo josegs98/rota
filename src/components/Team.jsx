@@ -1,29 +1,15 @@
 import React, { Component } from 'react';
 import ReactTable from "react-table";
-import "react-table/react-table.css"; import cellEditFactory from 'react-bootstrap-table2-editor';
+import "react-table/react-table.css";
 import * as workerAction from '../actions/AddWorker';
 import { connect } from 'react-redux';
-import paginationFactory from 'react-bootstrap-table2-paginator';
-import { Grid, Col, Button, Panel } from 'react-bootstrap';
+import { Col, Button } from 'react-bootstrap';
 
 class Team extends Component {
+    contador = 0;
+    general = 0;
 
-    allWorkersColumns = [{
-        formatter: (cell, row) => <Button bsStyle='info' onClick={() => this.props.deleteWorkerLocal(row.dni)}>Remove from On Call Pool</Button>
-    },
-    {
-        dataField: 'dni',
-        text: 'Product ID',
-    },
-    {
-        dataField: 'name',
-        text: 'Product Name'
-    }, {
-        dataField: 'price',
-        text: 'Product Price'
-    }];
-
-    allWorkersRow=[{
+    allWorkersRow = [{
         dni: 'Product ID',
         name: 'Pepito',
         surname: 'González'
@@ -37,14 +23,23 @@ class Team extends Component {
         surname: 'González'
     }];
 
-    submitWorker(input) {
-        this.props.createWorkerLocal(input)
+    constructor(props) {
+        super(props);
+        this.addOnCallWorker = this.addOnCallWorker.bind(this);
+        if ( this.props.allWorkers.length === 0){
+            this.allWorkersRow.map(item => this.props.insertAllWorkers(item))
+        }
+    }
+
+    addOnCallWorker(row) {
+        console.log('addOnCallWorker ', row)
+        this.props.createWorkerLocal(row);
     }
 
     render() {
         return (
             <div>
-                <br/>
+                <br />
                 <Col xs={5} xsOffset={1}>
                     <ReactTable
                         data={this.props.workers}
@@ -60,7 +55,6 @@ class Team extends Component {
                                     {
                                         Header: "Name",
                                         accessor: "name",
-
                                     },
                                     {
                                         Header: 'Surname',
@@ -84,7 +78,8 @@ class Team extends Component {
                 </Col>
                 <Col xs={5} xsOffset={1}>
                     <ReactTable
-                        data={this.allWorkersRow}
+                        data={this.props.allWorkers}
+                        filterable
                         columns={[
                             {
                                 Header: "All workers",
@@ -104,12 +99,27 @@ class Team extends Component {
                                         accessor: 'surname'
                                     },
                                     {
-                                        Header: 'Delete worker',
-                                        accessor: 'deleteWorker',
+                                        Header: 'On call pool',
+                                        accessor: 'oncallpool',
+                                        filterable: false,
                                         Cell: row => (
-                                            <Button block bsSize='small' onClick={()=>this.props.createWorkerLocal(row.original)} >Add to on Call Pool</Button>
+                                            <Button block bsSize='small' onClick={() =>
+
+                                                this.addOnCallWorker(row.original)
+
+                                            } >Add to on Call Pool</Button>
                                         )
                                     },
+                                    {
+                                        Header: 'Delete worker',
+                                        accessor: 'deleteworker',
+                                        filterable: false,
+                                        Cell: row => (
+                                            <Button block bsSize='small' bsStyle='danger' onClick={() => this.props.deleteFromAllWorkers(row.original.dni)}>
+                                                <span className='glyphicon glyphicon-remove '></span>
+                                            </Button>
+                                        )
+                                    }
                                 ]
                             },
                         ]}
@@ -123,16 +133,19 @@ class Team extends Component {
     }
 }
 const mapStateToProps = (state, ownProps) => {
-    console.log('state', state)
+    console.log('state ', state)
     return {
-        workers: state.workers
+        workers: state.workers,
+        allWorkers: state.allWorkers
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
         createWorkerLocal: worker => dispatch(workerAction.createWorker(worker)),
-        deleteWorkerLocal: dni => dispatch(workerAction.deleteWorker(dni))
+        deleteWorkerLocal: dni => dispatch(workerAction.deleteWorker(dni)),
+        insertAllWorkers: allWorkers => dispatch(workerAction.insertAllWorkers(allWorkers)),
+        deleteFromAllWorkers: dniallworker => dispatch(workerAction.deleteFromAllWorkers(dniallworker))
     }
 }
 
