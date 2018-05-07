@@ -35,11 +35,11 @@ class Settings extends Component {
     }
 
     handleChange = (name, value ) => {
-        if (value < 0 || value === "") {
+        if (value < 0) {
             value = 0;
         }
         this.setState({ [name]: value })
-        console.log(this.state.baseMoney);
+        console.log(this.state);
     }
 
     handleSubmit(event) {
