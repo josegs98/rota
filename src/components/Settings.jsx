@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Panel, Row, Grid, Col, Form, Button } from 'react-bootstrap';
 import TimePicker from 'react-bootstrap-time-picker';
 
+import { connect } from 'react-redux';
+import * as settings from '../actions/Settings';
+
 class Settings extends Component {
 
     constructor(props) {
@@ -20,7 +23,15 @@ class Settings extends Component {
             weekendMoney: '1',
             weekMoney: '1'
         }
+        if (this.props.settings.length===0){
+            this.props.createSettings(this.state);
+        }
+        
 
+    }
+
+    componentWillReceiveProps(props){
+        this.setState(this.props.settings);
     }
 
     handleStartTimeChange(startTime) {
@@ -29,21 +40,21 @@ class Settings extends Component {
     }
 
     handleFinishTimeChange(finishTime) {
-        console.log('finish time=> ', finishTime) ;     // <- prints "3600" if "01:00" is picked
+        console.log('finish time=> ', finishTime) ;    
         this.setState({ finishTime });
 
     }
 
     handleChange = (name, value ) => {
-        if (value < 0) {
-            value = 0;
-        }
-        this.setState({ [name]: value })
-        console.log(this.state);
+        this.setState({ [name]: value });
     }
 
     handleSubmit(event) {
         event.preventDefault();
+    }
+
+    submitNewChanges(){
+       this.props.createSettings(this.state);
     }
 
     render() {
@@ -51,7 +62,7 @@ class Settings extends Component {
             <Grid>
                 <Panel>
                     <Panel.Body>
-                        <Form inline onSubmit={() => this.submitNewSettingsValues()}>
+                        
                             <Row>
                                 <Col sm={5} smOffset={1}>
                                     <label htmlFor=''>Base Money: </label><br /> &nbsp;<input name='baseMoney' className='form-control' type='text' onChange={(e)=>{
@@ -93,19 +104,18 @@ class Settings extends Component {
                             <hr />
                             <Row>
                                 <Col sm={5} smOffset={1}>
-                                    Start time: &nbsp; <TimePicker onChange={this.handleStartTimeChange} value={this.state.startTime} step={10} format={24} />
+                                    Start time: &nbsp; <TimePicker name='startTime' onChange={this.handleStartTimeChange} value={this.state.startTime} step={10} format={24} />
                                 </Col>
                                 <Col sm={5} smOffset={1}>
-                                    Finish time: &nbsp; <TimePicker onChange={this.handleFinishTimeChange} value={this.state.finishTime} step={10} format={24} />
+                                    Finish time: &nbsp; <TimePicker name='finishTime' onChange={this.handleFinishTimeChange} value={this.state.finishTime} step={10} format={24} />
                                 </Col>
                             </Row>
                             <br />
                             <Row>
                                 <Col sm={5} smOffset={9}>
-                                    <Button type='submit' bsStyle='primary'>Save changes</Button>
+                                    <Button type='submit' bsStyle='primary' onClick={()=>this.submitNewChanges()}>Save changes</Button>
                                 </Col>
                             </Row>
-                        </Form>
                     </Panel.Body>
                 </Panel>
             </Grid>
@@ -113,4 +123,17 @@ class Settings extends Component {
     }
 }
 
-export default Settings;
+const mapStateToProps = (state, ownProps) => {
+    console.log('settings state ', state)
+    return {
+        settings: state.settings.settings
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        createSettings: settingsDefault => dispatch(settings.defaultSettings(settingsDefault))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

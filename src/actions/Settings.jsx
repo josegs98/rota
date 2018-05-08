@@ -1,3 +1,5 @@
+
+
 export const defaultSettings = (settings) => {
     // Return action
     return {

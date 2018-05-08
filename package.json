@@ -12,6 +12,8 @@
     "react-bootstrap-table2-editor": "^0.1.5",
     "react-bootstrap-table2-paginator": "^0.1.1",
     "react-bootstrap-time-picker": "^1.0.3",
+    "react-dnd": "^2.6.0",
+    "react-dnd-html5-backend": "^2.6.0",
     "react-dom": "^16.3.2",
     "react-redux": "^5.0.7",
     "react-router": "^4.2.0",
