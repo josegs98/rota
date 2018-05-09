@@ -32,8 +32,9 @@ class Team extends Component {
     }
 
     addOnCallWorker(row) {
-        console.log('addOnCallWorker ', row);
+        
         this.props.createWorkerLocal(row);
+        console.log('addOnCallWorker ', this.props.workers);
     }
 
     render() {
@@ -135,7 +136,7 @@ class Team extends Component {
 const mapStateToProps = (state, ownProps) => {
     console.log('state ', state)
     return {
-        workers: state.workers.Worker,
+        workers: state.workers.workers,
         allWorkers: state.workers.allWorkers
     }
 }

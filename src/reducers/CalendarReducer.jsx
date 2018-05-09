@@ -4,7 +4,7 @@ export default (state={events:[]}, action)=>{
             console.log('CALENDAR_EVENT')
             return{
                 ...state,
-                events:action.events
+                events: [...state.events, action.events]
             };
         default:
             return state;
