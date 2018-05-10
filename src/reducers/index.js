@@ -1,4 +1,3 @@
-import React from 'react';
 import workers from './AddWorkerReducer';
 import calendar from './CalendarReducer';
 import settings from './SettingsReducer';

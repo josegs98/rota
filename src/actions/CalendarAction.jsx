@@ -5,3 +5,10 @@ export const calendarEvents=(events)=>{
         events:events
     }
 }
+
+export const updateEvent=(updatedEvent)=>{
+    return {
+        type:'UPDATE_EVENT',
+        updatedEvent 
+    }
+}

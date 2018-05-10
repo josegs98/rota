@@ -28,6 +28,7 @@ export default (state = { workers: [], allWorkers:[] }, action) => {
 
         case 'DELETE_WORKER':
             const workerDni=action.dni;
+            
             return{
                 ...state,
                 workers:state.workers.filter(worker=>worker.dni!==workerDni)
