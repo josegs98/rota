@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Calendar from 'react-big-calendar';
 import moment from 'moment';
 import { connect } from 'react-redux';
+import {DatePicker} from 'antd';
 import { DragDropContext } from 'react-dnd';
 import { Panel, Grid, Row, Col, Modal, Button } from 'react-bootstrap';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -36,8 +37,8 @@ class MyCalendar extends Component {
             events: [],
             newEvent: {
                 id: '',
-                start: '',
-                end: '',
+                start: moment(),
+                end: moment(),
                 title: '',
             },
             showTaskModal: false,
@@ -46,26 +47,16 @@ class MyCalendar extends Component {
         };
 
     }
-    eventStyleGetter=(event, start, end, isSelected) => {
-        console.log(event);
-        var backgroundColor = '#' + event.hexColor;
-        var style = {
-            backgroundColor: backgroundColor,
-            borderRadius: '0px',
-            opacity: 0.8,
-            color: 'black',
-            border: '0px',
-            display: 'block'
-        };
-        return {
-            style: style
-        };
-    }
 
     componentWillReceiveProps(props) {
         console.log("will recieve props", props)
         this.setState({ events: props.events });
         
+    }
+
+    componentDidMount(){
+        this.setState({ events: this.props.events });
+
     }
 
     handleTaskClose() {
@@ -101,9 +92,6 @@ class MyCalendar extends Component {
     }
 
     handleTaskChange = (name, value) => {
-        if (name === "start" || name === "end") {
-            value = new Date(value);
-        }
         this.setState({
             newEvent: {
                 ...this.state.newEvent, [name]: value
@@ -112,36 +100,23 @@ class MyCalendar extends Component {
         console.log('estado modal ', this.state.newEvent);
     }
 
-    handleWorkerChange=(name, value)=>{
-        if (name==='startWorkerDate' || name==='endWorkerDate'){
-            value=new Date(value);
+    handleSelectChange=(name, value)=>{
+        console.log("ON CHANGE",)
+        if (name==='start' || name==='end'){
+            value= moment(value).format("YYYY-MM-DD");
         }
-
-        this.setState({
-            newEvent:{
-                
-            }
-        })
-    }
-
-    handleSelectChange=(event)=>{
-        console.log('selectChange ',event.target.value);
         this.setState({newEvent:
             {
-                title:event.target.value,
-                start:new Date(),
-                end:moment(new Date()).add(1, 'days')
+                ...this.state.newEvent, [name]:value
             }
-        }, () =>{
+        }/*, () =>{
             this.props.saveEvent({ ...this.state.newEvent, id: Math.random() });
-        });
-        console.log('EVEEEEEENTO ', this.state.newEvent)
-       
-        console.log('la opcion seleccionada ha sido ', JSON.stringify(this.state.selectedOption));
+        }*/);
+        console.log('EVENTO TRABAJADOR: '+this.state.newEvent);
     }
 
     confirmDialog() {
-        this.props.saveEvent({ ...this.state.newEvent, id: Math.random() });
+        this.props.saveEvent({ ...this.state.newEvent,start: moment(new Date(this.state.newEvent.start)), end: moment(new Date(this.state.newEvent.end)), id: Math.random() });
         this.setState({
             newEvent: {
                 id: '',
@@ -151,6 +126,19 @@ class MyCalendar extends Component {
             }
         })
         console.log('estado final', this.state.events)
+    }
+
+    confirmWorkerDialog(){
+        this.props.saveEvent({...this.state.newEvent, id: Math.random()});
+        this.setState({
+            newEvent: {
+                id: '',
+                start: '',
+                end: '',
+                title: ''
+            }
+        })
+        console.log('estado worker final ',this.state.events)
     }
 
     render() {
@@ -173,24 +161,18 @@ class MyCalendar extends Component {
                                                 <label htmlFor=''>Titulo de la tarea</label>
                                                 <input type='text' name='title' placeholder='Título' onChange={(e) => { this.handleTaskChange(e.target.name, e.target.value) }} value={this.state.newEvent.title} />
                                             </Col>
-
-                                            <Col mdOffset={6}>
-                                                <label htmlFor=''>Descripción</label>
-                                                <br />
-                                                <textarea name='' id='' placeholder='Descripción' ></textarea>
-                                            </Col>
                                         </div>
                                         <div className='row'>
                                             <Col md={3}>
                                                 <label htmlFor=''>Start date</label>
                                                 <br />
-                                                <input name='start' type='date' placeholder='Start' onChange={(e) => { this.handleTaskChange(e.target.name, e.target.value) }} value={this.state.start} />
+                                                <DatePicker/>
                                             </Col>
 
                                             <Col mdOffset={6}>
                                                 <label htmlFor=''>End date </label>
                                                 <br />
-                                                <input name='end' type='date' placeholder='End' onChange={(e) => { this.handleTaskChange(e.target.name, e.target.value) }} value={this.state.end} />
+                                                <input name='end' type='date' placeholder='End' onChange={(e) => { this.handleTaskChange(e.target.name, e.target.value) }} value={moment(new Date(this.state.newEvent.end)).format('YYYY-MM-DD')} />
                                             </Col>
                                         </div>
                                         <br />
@@ -202,14 +184,16 @@ class MyCalendar extends Component {
                                     <Modal.Header><h3>Asignar trabajador</h3></Modal.Header>
                                     <Modal.Body>
                                         <label>Select On Call Worker</label>
-                                        <select name='' value={this.state.selectedOption} className='form-control' onChange={(x)=>this.handleSelectChange(x)}>
+                                        <select name='title' value={this.state.newEvent.title} className='form-control' onChange={(e)=>this.handleSelectChange(e.target.name, e.target.value)}>
                                             {this.props.workers.map((x)=><option value={x.dni} key={x.dni}>{x.name}</option>)}
                                         </select>
                                         <label>Start date:</label>
-                                        <input name='startWorkerDate' type='date' className='form-control'/>
-                                        <label>End date: </label>
-                                        <input name='endWorkerDate' type='date' className='form-control'/>
-                                        <Button bsStyle='primary'>Aceptar</Button>
+                                        <input name='start' type='date' value={this.state.start} onChange={(e)=>this.handleSelectChange(e.target.name, e.target.value)} className='form-control'/>
+                                        <label>End datrrgtaaaaaae: </label>
+                                        <input name='end' type='date' value={moment(this.state.end).format("yyyy-MM-dd")} onChange={(e)=>this.handleSelectChange(e.target.name, e.target.value)} className='form-control'/>
+                                        <Button bsStyle='primary' onClick={()=>this.confirmWorkerDialog()}>Aceptar</Button>
+                                        <input name='123' type='date' value={this.state.end} onChange={(e)=>this.handleSelectChange(e.target.name, e.target.value)} className='form-control'/>
+
                                     </Modal.Body>
                                 </Modal>
                             </Col>
@@ -222,7 +206,6 @@ class MyCalendar extends Component {
                                 onEventDrop={this.moveEvent}
                                 onEventResize={this.resizeEvent}
                                 defaultView='month'
-                                eventPropGetter={this.eventStyleGetter}
                                 style={calendarStyle}
                             />
                         </Row>

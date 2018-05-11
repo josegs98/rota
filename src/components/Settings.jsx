@@ -49,10 +49,6 @@ class Settings extends Component {
         this.setState({ [name]: value });
     }
 
-    handleSubmit(event) {
-        event.preventDefault();
-    }
-
     submitNewChanges(){
        this.props.createSettings(this.state);
     }
