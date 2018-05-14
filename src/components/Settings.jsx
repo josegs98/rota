@@ -35,12 +35,10 @@ class Settings extends Component {
     }
 
     handleStartTimeChange(startTime) {
-        console.log('start time=> ', startTime) ;
         this.setState({ startTime });
     }
 
     handleFinishTimeChange(finishTime) {
-        console.log('finish time=> ', finishTime) ;    
         this.setState({ finishTime });
 
     }
@@ -51,6 +49,7 @@ class Settings extends Component {
 
     submitNewChanges(){
        this.props.createSettings(this.state);
+       console.log('estado final: ',this.state)
     }
 
     render() {

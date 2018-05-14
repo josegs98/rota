@@ -1,4 +1,4 @@
-export default (state = { events: [], updatedEvents: [] }, action) => {
+export default (state = { events: [] }, action) => {
     switch (action.type) {
         case 'CALENDAR_EVENT':
             console.log('CALENDAR_EVENT')
@@ -18,6 +18,15 @@ export default (state = { events: [], updatedEvents: [] }, action) => {
                     }
                     return item
                 })
+            }
+        
+        case 'DELETE_EVENT':
+            console.log('DELETE EVENT')
+            const id = action.id;
+
+            return {
+                ...state,
+                events:state.events.filter(event=>event.id!==id)
             }
         default:
             return state;

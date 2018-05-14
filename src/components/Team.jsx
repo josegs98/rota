@@ -3,7 +3,7 @@ import ReactTable from "react-table";
 import "react-table/react-table.css";
 import * as workerAction from '../actions/AddWorker';
 import { connect } from 'react-redux';
-import { Col, Button } from 'react-bootstrap';
+import { Col, Button, Panel, Grid } from 'react-bootstrap';
 
 class Team extends Component {
     contador = 0;
@@ -29,21 +29,34 @@ class Team extends Component {
         if ( this.props.allWorkers.length === 0){
             this.allWorkersRow.map(item => this.props.insertAllWorkers(item))
         }
+        this.state={
+            comprobadorWorker:true
+        }
     }
 
     addOnCallWorker(row) {
-        
+        console.log('row dni ',row.dni)
         this.props.createWorkerLocal(row);
-        console.log('addOnCallWorker ', this.props.workers);
+    }
+
+    deleteWorker(dni){
+        this.props.deleteFromAllWorkers(dni);
+        this.props.workers.forEach((e)=>{
+            if(e.dni===dni){
+                this.props.deleteWorkerLocal(dni);
+            }
+        })
     }
 
     render() {
         return (
-            <div>
+            <Grid>
                 <br />
-                <Col xs={5} xsOffset={1}>
+                <div class='row'>
+                <Col xs={6}>
                     <ReactTable
                         data={this.props.workers}
+                        filterable
                         columns={[
                             {
                                 Header: "On call workers",
@@ -77,7 +90,7 @@ class Team extends Component {
                         className="-striped -highlight"
                     />
                 </Col>
-                <Col xs={5} xsOffset={1}>
+                <Col xs={6}>
                     <ReactTable
                         data={this.props.allWorkers}
                         filterable
@@ -108,7 +121,7 @@ class Team extends Component {
 
                                                 this.addOnCallWorker(row.original)
 
-                                            } >Add to on Call Pool</Button>
+                                            } ><span className='glyphicon glyphicon-plus'></span></Button>
                                         )
                                     },
                                     {
@@ -116,7 +129,7 @@ class Team extends Component {
                                         accessor: 'deleteworker',
                                         filterable: false,
                                         Cell: row => (
-                                            <Button block bsSize='small' bsStyle='danger' onClick={() => this.props.deleteFromAllWorkers(row.original.dni)}>
+                                            <Button block bsSize='small' bsStyle='danger' onClick={() => this.deleteWorker(row.original.dni)}>
                                                 <span className='glyphicon glyphicon-remove '></span>
                                             </Button>
                                         )
@@ -128,13 +141,17 @@ class Team extends Component {
                         className="-striped -highlight"
                     />
                 </Col>
-                <br />
-            </div>
+                </div>
+                <br/><br/>
+                <hr/>
+                <div class='row'>
+                   <h3> New Worker </h3>
+                </div>
+            </Grid>
         );
     }
 }
 const mapStateToProps = (state, ownProps) => {
-    console.log('state ', state)
     return {
         workers: state.workers.workers,
         allWorkers: state.workers.allWorkers

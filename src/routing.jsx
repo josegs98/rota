@@ -11,12 +11,10 @@ class Routing extends Component{
         return(
             <Router history={history}>
                 <Switch>
-                    <div>
-                        <Route exact path='/' component={Login}/>
-                        <Route path='/team' component={Team}/>
-                        <Route path='/main' component={Main}/>
-                        <Route path='/login' component={Login}/>
-                    </div>
+                    <Route exact path='/' component={Login}/>
+                    <Route path='/team' component={Team}/>
+                    <Route path='/main' component={Main}/>
+                    <Route path='/login' component={Login}/>
                 </Switch>
             </Router>
         );

@@ -34,7 +34,6 @@ class Main extends Component {
 
     constructor(props) {
         super(props);
-        console.log(this.props.history);
         this.state = {
             show:false,
             activeItem: 'home'

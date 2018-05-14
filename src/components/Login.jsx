@@ -10,7 +10,6 @@ var panelStyle = {
 class Login extends Component {
   
     submitLogin(ruta){
-        console.log('SUBMIT LOGIN => ',history)
         history.push(ruta);
     }
 
