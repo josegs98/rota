@@ -29,7 +29,29 @@ var calendarStyle = {
     margin: '10px'
 }
 
+
+
 class MyCalendar extends Component {
+
+    styledEvents = (event, start, end, isSelected) => {
+        let newStyle = {
+            backgroundColor: "lightgrey",
+            color: 'black',
+            borderRadius: "0px",
+            border: "none"
+        };
+
+        if (event.type === 'onCall') {
+            newStyle.backgroundColor = "lightcoral";
+        } else {
+            newStyle.backgroundColor = "lightblue";
+        }
+
+        return {
+            className: "",
+            style: newStyle
+        };
+    }
 
     constructor(props, context) {
         super(props, context);
@@ -51,18 +73,33 @@ class MyCalendar extends Component {
         this.onChangeWorkerEndDate = this.onChangeWorkerEndDate.bind(this);
         this.onChangeWorkerStartDate = this.onChangeWorkerStartDate.bind(this);
 
+        //EVENT
+        this.handleModalEventShow = this.handleModalEventShow.bind(this);
+        this.handleModalEventClose = this.handleModalEventClose.bind(this);
+        this.handleModalEventChange=this.handleModalEventChange.bind(this); 
+        this.onChangeUpdateStartDate=this.onChangeUpdateStartDate.bind(this);
+        this.onChangeUpdateEndDate=this.onChangeUpdateEndDate.bind(this);
+
         this.state = {
             events: [],
             newEvent: {
                 id: '',
                 start: moment(),
-                type:'',
+                type: '',
                 end: moment(),
                 title: '',
+                
+            },
+            updatedEvent:{
+                id: '',
+                start: moment(),
+                type: '',
+                end: moment(),
+                title: ''
             },
             showTaskModal: false,
             showWorkerModal: false,
-            selectedOption: '',
+            showEventModal: false
         };
 
     }
@@ -81,13 +118,12 @@ class MyCalendar extends Component {
     moveEvent({ event, start, end }) {
         const updatedEvent = { ...event, start, end }
         this.props.changeEvent(updatedEvent);
-        console.log('eventos guardados', updatedEvent);
+        //console.log('eventos guardados', updatedEvent);
     }
 
     resizeEvent = (resizeType, { event, start, end }) => {
         const updatedEvent = { ...event, start, end };
         this.props.changeEvent(updatedEvent);
-        console.log('resize event ', this.props.events)
     }
 
     /*--------------------------TASK--------------------------- */
@@ -107,10 +143,9 @@ class MyCalendar extends Component {
     handleTaskChange = (name, value) => {
         this.setState({
             newEvent: {
-                ...this.state.newEvent, [name]: value, type:'task'
+                ...this.state.newEvent, [name]: value, type: 'task'
             }
         })
-        console.log('estado modal ', this.state.newEvent);
     }
 
     onChangeTaskStartDate(date, dateString) {
@@ -141,7 +176,7 @@ class MyCalendar extends Component {
             newEvent: {
                 id: '',
                 start: '',
-                type:'',
+                type: '',
                 end: '',
                 title: ''
             }
@@ -189,10 +224,18 @@ class MyCalendar extends Component {
     }
 
     handleWorkerChange = (value) => {
+        var designatedWorker = null;
+
+        this.props.workers.forEach((e) => {
+            if (e.dni === value) {
+                designatedWorker = e;
+            }
+        })
+
         this.setState({
             newEvent:
                 {
-                    ...this.state.newEvent, title: value, type:'onCall'
+                    ...this.state.newEvent, title: designatedWorker.name, type: 'onCall'
                 }
         }/*, () =>{
             this.props.saveEvent({ ...this.state.newEvent, id: Math.random() });
@@ -206,7 +249,7 @@ class MyCalendar extends Component {
             newEvent: {
                 id: '',
                 start: '',
-                type:'',
+                type: '',
                 end: '',
                 title: ''
             }
@@ -216,6 +259,71 @@ class MyCalendar extends Component {
     }
 
     /*-------------------------------------------------*/
+
+    /*------------------------EVENT-------------------------*/
+    
+
+    handleModalEventShow(e) {
+        console.log('eeeeeeeeeee=> ', e);
+        this.setState({ showEventModal: true });
+        this.setState({updatedEvent:{
+            title:e.title,
+            start:moment(e.start),
+            end:moment(e.end),
+            type:e.type,
+            id:e.id
+        }})
+        
+    }
+
+    onChangeUpdateStartDate(date, dateString) {
+        this.setState({
+            updatedEvent: {
+                ...this.state.updatedEvent,
+                start: moment(new Date(date._d))
+            }
+        })
+        console.log('UPDATED EVENT=> ', this.state.updatedEvent);
+    }
+
+    onChangeUpdateEndDate(date, dateString) {
+
+        this.setState({
+            updatedEvent: {
+                ...this.state.updatedEvent,
+                end: moment(new Date(date._d))
+            }
+        })
+        console.log('UPDATED EVENT=> ', this.state.updatedEvent);
+    }
+
+    handleModalEventChange=(name, value)=>{
+        this.setState({updatedEvent:{
+            ...this.state.updatedEvent,
+            [name]:value,
+        }})
+        console.log(this.state.newEvent);
+    }
+
+    handleModalEventClose() {
+        this.setState({ showEventModal: false });
+    }
+
+    removeEvent(){
+        //console.log('evento seleccionado => ', e)
+        this.props.deleteEvent(this.state.updatedEvent.id);
+        this.setState({ showEventModal: false });
+        toast.error('Event deleted');
+    }
+
+    editEvent(){
+        console.log('evento actualizado=> ', this.state.updatedEvent)
+        this.props.changeEvent(this.state.updatedEvent);
+
+    }
+
+    /*-------------------------------------------------*/
+
 
 
     render() {
@@ -281,15 +389,15 @@ class MyCalendar extends Component {
 
                                         <div className='row'>
                                             <Col xs={4}>
-                                            <Select
-                                                size='default'
-                                                defaultValue='Select on call worker'
-                                                name='title'
-                                                onChange={(e)=>this.handleWorkerChange(e)}
-                                                style={{ width: 200 }}
-                                            >
-                                                {this.props.workers.map((x)=><Option value={x.name} key={x.dni}>{x.name}</Option>)}
-                                            </Select>
+                                                <Select
+                                                    size='default'
+                                                    defaultValue='Select on call worker'
+                                                    name='title'
+                                                    onChange={(e) => this.handleWorkerChange(e)}
+                                                    style={{ width: 200 }}
+                                                >
+                                                    {this.props.workers.map((x) => <Option value={x.dni} key={x.dni}>{x.name}</Option>)}
+                                                </Select>
 
                                             </Col>
                                         </div>
@@ -298,7 +406,7 @@ class MyCalendar extends Component {
 
                                         <div className='row'>
                                             <Col xs={6}>
-                                                <label>Start date:</label>&nbsp;
+                                                <label>Start date:</label>
                                                 <DatePicker onChange={this.onChangeWorkerStartDate} />
                                             </Col>
                                             <Col xs={6}>
@@ -319,44 +427,50 @@ class MyCalendar extends Component {
                                     </Modal.Body>
                                 </Modal>
                                 <ToastContainer
-                                    position='bottom-left' 
+                                    position='bottom-left'
                                     autoClose={3000}
                                     hideProgressBar={true}
-                                 />
+                                />
                             </Col>
                         </Row>
                         <Row>
                             <DragAndDropCalendar
-                                eventPropGetter={
-                                        (event, start, end, isSelected) => {
-                                            let newStyle = {
-                                                backgroundColor: "lightgrey",
-                                                color: 'black',
-                                                borderRadius: "0px",
-                                                border: "none"
-                                            };
-
-                                            if (event.type === 'onCall') {
-                                                newStyle.backgroundColor = "lightcoral";
-                                            } else {
-                                                newStyle.backgroundColor = "lightblue";
-                                            }
-
-                                            return {
-                                                className: "",
-                                                style: newStyle
-                                            };
-                                        }
-                                    }                
+                                eventPropGetter={this.styledEvents}
                                 selectable
                                 events={this.state.events}
                                 defaultDate={new Date()}
                                 onEventDrop={this.moveEvent}
                                 onEventResize={this.resizeEvent}
                                 defaultView='month'
-                                onClick=''
+                                onSelectEvent={this.handleModalEventShow}
                                 style={calendarStyle}
                             />
+                            <Modal show={this.state.showEventModal} onHide={this.handleModalEventClose}>
+                                <Modal.Header>
+                                    <h3>Edit event</h3>
+                                </Modal.Header>
+                                <Modal.Body>
+                                    
+                                    <div className='row'>
+                                        <Col xs={3}>
+                                            <label>Title:</label>
+                                            <input type='text' name='title' className='form-control' placeholder='title' value={this.state.updatedEvent.title} onChange={(e)=>this.handleModalEventChange(e.target.name, e.target.value)}/>
+                                        </Col>
+                                        <Col xs={3}>
+                                            <label>Start:</label>
+                                            <DatePicker onChange={this.onChangeUpdateStartDate} value={this.state.updatedEvent.start} />
+                                        </Col>
+                                        <Col xs={3}>
+                                            <label>End:</label>
+                                            <DatePicker onChange={this.onChangeUpdateEndDate} value={this.state.updatedEvent.end} />
+                                        </Col>
+                                    </div>
+                                </Modal.Body>
+                                <Modal.Footer>
+                                    <Button bsStyle='warning'onClick={()=>this.editEvent()}>Edit</Button>
+                                    <Button bsStyle='danger' onClick={()=>this.removeEvent()}>Remove</Button>
+                                </Modal.Footer>
+                            </Modal>
                         </Row>
                     </Panel.Body>
 

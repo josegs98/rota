@@ -1,151 +1,226 @@
 import React, { Component } from 'react';
-import ReactTable from "react-table";
-import "react-table/react-table.css";
-import * as workerAction from '../actions/AddWorker';
+
 import { connect } from 'react-redux';
-import { Col, Button, Panel, Grid } from 'react-bootstrap';
+import * as workerAction from '../actions/AddWorker';
+
+import ReactTable from 'react-table';
+import { Col, Button, Grid } from 'react-bootstrap';
+import { ToastContainer, toast } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.css';
+import 'react-table/react-table.css';
+
 
 class Team extends Component {
-    contador = 0;
-    general = 0;
 
     allWorkersRow = [{
-        dni: 'Product ID',
+        dni: '89998322L',
         name: 'Pepito',
         surname: 'González'
     }, {
-        dni: 'Product Name',
+        dni: '89298322T',
         name: 'Juanito',
         surname: 'González'
     }, {
-        dni: 'Product Price',
+        dni: '89992322P',
         name: 'Fulanito',
         surname: 'González'
     }];
 
     constructor(props) {
         super(props);
+
         this.addOnCallWorker = this.addOnCallWorker.bind(this);
-        if ( this.props.allWorkers.length === 0){
+        this.handleWorker=this.handleWorker.bind(this);
+
+        if (this.props.allWorkers.length === 0) {
             this.allWorkersRow.map(item => this.props.insertAllWorkers(item))
         }
-        this.state={
-            comprobadorWorker:true
+        this.state = {
+            newWorker:
+            {
+                name:'',
+                surname:'',
+                dni:''
+            }
         }
     }
 
-    addOnCallWorker(row) {
-        console.log('row dni ',row.dni)
-        this.props.createWorkerLocal(row);
+    addOnCallWorker(worker) {
+        console.log('row dni ', worker);
+        var comprobarDni=true;
+
+        this.props.workers.forEach((e)=>{
+            if (e.dni===worker.dni){
+                comprobarDni=false;
+                console.log('dni iterado=> ', e.dni, 'dni introducido=> ',worker.dni)
+            }
+        })
+
+        if (comprobarDni===false){
+            toast.error('Two same dni!');
+        }else{
+            this.props.createWorkerLocal(worker);
+        }
+        
     }
 
-    deleteWorker(dni){
+    deleteWorker(dni) {
         this.props.deleteFromAllWorkers(dni);
-        this.props.workers.forEach((e)=>{
-            if(e.dni===dni){
+        this.props.workers.forEach((e) => {
+            if (e.dni === dni) {
                 this.props.deleteWorkerLocal(dni);
             }
         })
+    }
+
+    handleWorker=(value, name)=>{
+        this.setState({newWorker:{
+            ...this.state.newWorker,
+            [name]:value
+        }})
+    }
+
+    createWorker(){
+        var comprobarDni=true;
+        this.props.allWorkers.forEach((e)=>{
+            if (this.state.newWorker.dni===e.dni){
+                comprobarDni=false;
+                //console.log('trabajador nuevo dni=> ',this.state.newWorker.dni, ' comporbarDni=> ', comprobarDni, 'dni iterado=> ',e.dni);
+            }
+        })
+        if (comprobarDni===false){
+            toast.error('Two same dni!');
+        }else{
+            this.props.insertAllWorkers(this.state.newWorker);
+        }
+        console.log(this.props.allWorkers)
     }
 
     render() {
         return (
             <Grid>
                 <br />
-                <div class='row'>
-                <Col xs={6}>
-                    <ReactTable
-                        data={this.props.workers}
-                        filterable
-                        columns={[
-                            {
-                                Header: "On call workers",
-                                columns: [
-                                    {
-                                        Header: "DNI",
-                                        accessor: "dni"
-                                    },
-
-                                    {
-                                        Header: "Name",
-                                        accessor: "name",
-                                    },
-                                    {
-                                        Header: 'Surname',
-                                        accessor: 'surname'
-                                    },
-                                    {
-                                        Header: 'Delete worker',
-                                        accessor: 'deleteWorker',
-                                        Cell: row => (
-                                            <Button block bsSize='small' bsStyle='danger' onClick={() => this.props.deleteWorkerLocal(row.original.dni)}>
-                                                <span className='glyphicon glyphicon-remove '></span>
-                                            </Button>
-                                        )
-                                    },
-                                ]
-                            },
-                        ]}
-                        defaultPageSize={10}
-                        className="-striped -highlight"
-                    />
-                </Col>
-                <Col xs={6}>
-                    <ReactTable
-                        data={this.props.allWorkers}
-                        filterable
-                        columns={[
-                            {
-                                Header: "All workers",
-                                columns: [
-                                    {
-                                        Header: "DNI",
-                                        accessor: "dni"
-                                    },
-
-                                    {
-                                        Header: "Name",
-                                        accessor: "name",
-
-                                    },
-                                    {
-                                        Header: 'Surname',
-                                        accessor: 'surname'
-                                    },
-                                    {
-                                        Header: 'On call pool',
-                                        accessor: 'oncallpool',
-                                        filterable: false,
-                                        Cell: row => (
-                                            <Button block bsSize='small' onClick={() =>
-
-                                                this.addOnCallWorker(row.original)
-
-                                            } ><span className='glyphicon glyphicon-plus'></span></Button>
-                                        )
-                                    },
-                                    {
-                                        Header: 'Delete worker',
-                                        accessor: 'deleteworker',
-                                        filterable: false,
-                                        Cell: row => (
-                                            <Button block bsSize='small' bsStyle='danger' onClick={() => this.deleteWorker(row.original.dni)}>
-                                                <span className='glyphicon glyphicon-remove '></span>
-                                            </Button>
-                                        )
-                                    }
-                                ]
-                            },
-                        ]}
-                        defaultPageSize={10}
-                        className="-striped -highlight"
-                    />
-                </Col>
+                <div className='row'>
+                    <Col xs={3}>
+                        <h3> New Worker </h3>
+                    </Col>
                 </div>
-                <br/><br/>
                 <hr/>
-                <div class='row'>
-                   <h3> New Worker </h3>
+                <div className='row'>
+                    <Col xs={3}>
+                        <label>Name</label>
+                        <input name='name' className='form-control' placeholder='Name' type='text' onChange={(e)=>this.handleWorker(e.target.value, e.target.name)} />
+                    </Col>
+
+                    <Col xs={3}>
+                        <label>Surname</label>
+                        <input name='surname' className='form-control' placeholder='Surname' type='text' onChange={(e)=>this.handleWorker(e.target.value, e.target.name)}/>
+                    </Col>
+                    <Col xs={3}>
+                        <label>DNI</label>
+                        <input name='dni' className='form-control' placeholder='Dni' type='text' onChange={(e)=>this.handleWorker(e.target.value, e.target.name)}/>
+                    </Col>
+                    <br/>
+                    <Col xs={3} >
+                        <Button bsStyle='primary' onClick={()=>this.createWorker()}>Add worker</Button>
+                    </Col>
+                </div>
+                <hr />
+                <div className='row'>
+                    <Col xs={6}>
+                        <ReactTable
+                            data={this.props.workers}
+                            filterable
+                            columns={[
+                                {
+                                    Header: "On call workers",
+                                    columns: [
+                                        {
+                                            Header: "DNI",
+                                            accessor: "dni"
+                                        },
+
+                                        {
+                                            Header: "Name",
+                                            accessor: "name",
+                                        },
+                                        {
+                                            Header: 'Surname',
+                                            accessor: 'surname'
+                                        },
+                                        {
+                                            Header: 'Delete worker',
+                                            accessor: 'deleteWorker',
+                                            Cell: row => (
+                                                <Button block bsSize='small' bsStyle='danger' onClick={() => this.props.deleteWorkerLocal(row.original.dni)}>
+                                                    <span className='glyphicon glyphicon-remove '></span>
+                                                </Button>
+                                            )
+                                        },
+                                    ]
+                                },
+                            ]}
+                            defaultPageSize={10}
+                            className="-striped -highlight"
+                        />
+                    </Col>
+                    <Col xs={6}>
+                        <ReactTable
+                            data={this.props.allWorkers}
+                            filterable
+                            columns={[
+                                {
+                                    Header: "All workers",
+                                    columns: [
+                                        {
+                                            Header: "DNI",
+                                            accessor: "dni"
+                                        },
+
+                                        {
+                                            Header: "Name",
+                                            accessor: "name",
+
+                                        },
+                                        {
+                                            Header: 'Surname',
+                                            accessor: 'surname'
+                                        },
+                                        {
+                                            Header: 'On call pool',
+                                            accessor: 'oncallpool',
+                                            filterable: false,
+                                            Cell: row => (
+                                                <Button block bsSize='small' onClick={() =>
+
+                                                    this.addOnCallWorker(row.original)
+
+                                                } ><span className='glyphicon glyphicon-plus'></span></Button>
+                                            )
+                                        },
+                                        {
+                                            Header: 'Delete worker',
+                                            accessor: 'deleteworker',
+                                            filterable: false,
+                                            Cell: row => (
+                                                <Button block bsSize='small' bsStyle='danger' onClick={() => this.deleteWorker(row.original.dni)}>
+                                                    <span className='glyphicon glyphicon-remove '></span>
+                                                </Button>
+                                            )
+                                        }
+                                    ]
+                                },
+                            ]}
+                            defaultPageSize={10}
+                            className="-striped -highlight"
+                        />
+                        <ToastContainer
+                            position='bottom-left' 
+                            autoClose={3000}
+                            hideProgressBar={true}
+                        />
+                    </Col>
                 </div>
             </Grid>
         );
