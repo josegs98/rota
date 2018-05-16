@@ -5,6 +5,7 @@ import { Nav, NavItem, MenuItem, NavDropdown } from 'react-bootstrap';
 import history from '../history';
 import ModalHoras from './ModalHoras';
 import Settings from './Settings';
+import Compensations from './Compensations';
 
 function CambiarPagina(props) {
     const paginaActual = props.activePage;
@@ -18,6 +19,10 @@ function CambiarPagina(props) {
 
     if (paginaActual==='settings'){
         return <Settings/>
+    }
+
+    if (paginaActual==='compensations'){
+        return <Compensations/>
     }
 
     return <MyCalendar/>
@@ -70,6 +75,9 @@ class Main extends Component {
                             Team
                         </NavItem>
                         <NavItem name='settings' onClick={(event) => this.handleItemClick(event.target.name)}>Settings</NavItem>
+                        <NavItem name='compensations' onClick={(event)=>this.handleItemClick(event.target.name)}>Compensations</NavItem>
+                        <NavItem name='logout' onClick={()=>this.pushRoute('/login')}>Logout</NavItem>
+                        {/*
                         <NavDropdown title='settings' id='nav-dropdown'>
                             <MenuItem onSelect={()=>this.setState({show:true})}>Change multiplier</MenuItem>
                             <MenuItem >Auto-schedule</MenuItem>
@@ -77,6 +85,7 @@ class Main extends Component {
                             <MenuItem onSelect={()=>this.pushRoute('/login')}>Logout</MenuItem>
                         </NavDropdown>
                         <ModalHoras show={this.state.show} changeModalState={this.changeModalState}/>
+                        */}
 
                     </Nav>
                 </div>

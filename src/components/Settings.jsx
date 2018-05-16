@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import { Panel, Row, Grid, Col, Button } from 'react-bootstrap';
+import { Panel, Row, Grid, Col, Button, Image } from 'react-bootstrap';
 import TimePicker from 'react-bootstrap-time-picker';
+import ImageSettings from '../images/settings.png'
+
 
 import { connect } from 'react-redux';
 import * as settings from '../actions/Settings';
@@ -55,7 +57,19 @@ class Settings extends Component {
     render() {
         return (
             <Grid>
+                <br/>
                 <Panel>
+                    <Panel.Heading>
+                        <div className='row'>
+                            <Col xs={1}>
+                                <Image alt='La imagen no ha cargado' src={ImageSettings}  responsive/>
+                            </Col>
+                            <Col xs={3}>
+                                <h3>Global Settings</h3>
+                            </Col>
+                        </div>
+
+                    </Panel.Heading>
                     <Panel.Body>
                         
                             <Row>

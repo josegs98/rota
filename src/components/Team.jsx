@@ -5,10 +5,13 @@ import * as workerAction from '../actions/AddWorker';
 
 import ReactTable from 'react-table';
 import { Col, Button, Grid } from 'react-bootstrap';
+import { Select } from 'antd';
 import { ToastContainer, toast } from 'react-toastify';
 
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-table/react-table.css';
+
+const Option = Select.Option;
 
 
 class Team extends Component {
@@ -31,38 +34,40 @@ class Team extends Component {
         super(props);
 
         this.addOnCallWorker = this.addOnCallWorker.bind(this);
-        this.handleWorker=this.handleWorker.bind(this);
+        this.handleWorker = this.handleWorker.bind(this);
+        this.handleRoleWorker=this.handleRoleWorker.bind(this);
 
         if (this.props.allWorkers.length === 0) {
             this.allWorkersRow.map(item => this.props.insertAllWorkers(item))
         }
         this.state = {
             newWorker:
-            {
-                name:'',
-                surname:'',
-                dni:''
-            }
+                {
+                    name: '',
+                    surname: '',
+                    dni: '',
+                    role:''
+                }
         }
     }
 
     addOnCallWorker(worker) {
         console.log('row dni ', worker);
-        var comprobarDni=true;
+        var comprobarDni = true;
 
-        this.props.workers.forEach((e)=>{
-            if (e.dni===worker.dni){
-                comprobarDni=false;
-                console.log('dni iterado=> ', e.dni, 'dni introducido=> ',worker.dni)
+        this.props.workers.forEach((e) => {
+            if (e.dni === worker.dni) {
+                comprobarDni = false;
+                console.log('dni iterado=> ', e.dni, 'dni introducido=> ', worker.dni)
             }
         })
 
-        if (comprobarDni===false){
+        if (comprobarDni === false) {
             toast.error('Two same dni!');
-        }else{
+        } else {
             this.props.createWorkerLocal(worker);
         }
-        
+
     }
 
     deleteWorker(dni) {
@@ -74,24 +79,35 @@ class Team extends Component {
         })
     }
 
-    handleWorker=(value, name)=>{
-        this.setState({newWorker:{
-            ...this.state.newWorker,
-            [name]:value
-        }})
+    handleWorker = (value, name) => {
+        this.setState({
+            newWorker: {
+                ...this.state.newWorker,
+                [name]: value
+            }
+        })
     }
 
-    createWorker(){
-        var comprobarDni=true;
-        this.props.allWorkers.forEach((e)=>{
-            if (this.state.newWorker.dni===e.dni){
-                comprobarDni=false;
+    handleRoleWorker = (value) => {
+        this.setState({
+            newWorker: {
+                ...this.state.newWorker,
+                role: value
+            }
+        })
+    }
+
+    createWorker() {
+        var comprobarDni = true;
+        this.props.allWorkers.forEach((e) => {
+            if (this.state.newWorker.dni === e.dni) {
+                comprobarDni = false;
                 //console.log('trabajador nuevo dni=> ',this.state.newWorker.dni, ' comporbarDni=> ', comprobarDni, 'dni iterado=> ',e.dni);
             }
         })
-        if (comprobarDni===false){
+        if (comprobarDni === false) {
             toast.error('Two same dni!');
-        }else{
+        } else {
             this.props.insertAllWorkers(this.state.newWorker);
         }
         console.log(this.props.allWorkers)
@@ -106,24 +122,37 @@ class Team extends Component {
                         <h3> New Worker </h3>
                     </Col>
                 </div>
-                <hr/>
+                <hr />
                 <div className='row'>
                     <Col xs={3}>
                         <label>Name</label>
-                        <input name='name' className='form-control' placeholder='Name' type='text' onChange={(e)=>this.handleWorker(e.target.value, e.target.name)} />
+                        <input name='name' className='form-control' placeholder='Name' type='text' onChange={(e) => this.handleWorker(e.target.value, e.target.name)} />
                     </Col>
 
                     <Col xs={3}>
                         <label>Surname</label>
-                        <input name='surname' className='form-control' placeholder='Surname' type='text' onChange={(e)=>this.handleWorker(e.target.value, e.target.name)}/>
+                        <input name='surname' className='form-control' placeholder='Surname' type='text' onChange={(e) => this.handleWorker(e.target.value, e.target.name)} />
                     </Col>
-                    <Col xs={3}>
+                    <Col xs={2}>
                         <label>DNI</label>
-                        <input name='dni' className='form-control' placeholder='Dni' type='text' onChange={(e)=>this.handleWorker(e.target.value, e.target.name)}/>
+                        <input name='dni' className='form-control' placeholder='Dni' type='text' onChange={(e) => this.handleWorker(e.target.value, e.target.name)} />
                     </Col>
-                    <br/>
-                    <Col xs={3} >
-                        <Button bsStyle='primary' onClick={()=>this.createWorker()}>Add worker</Button>
+                    <Col xs={2}>
+                        <label>Worker Role</label>
+                        <Select
+                            size='default'
+                            defaultValue='Select role worker'
+                            name='roleSelection'
+                            onChange={(e) => this.handleRoleWorker(e)}
+                        >
+                            <Option value='standard'>Standard</Option>
+                            <Option value='onCallManager'>On call Manager</Option>
+                            <Option value='admin'>Admin</Option>
+                        </Select>
+                    </Col>
+                    <br />
+                    <Col xs={2} >
+                        <Button bsStyle='primary' onClick={() => this.createWorker()}>Add worker</Button>
                     </Col>
                 </div>
                 <hr />
@@ -152,6 +181,7 @@ class Team extends Component {
                                         {
                                             Header: 'Delete worker',
                                             accessor: 'deleteWorker',
+                                            filterable: false,
                                             Cell: row => (
                                                 <Button block bsSize='small' bsStyle='danger' onClick={() => this.props.deleteWorkerLocal(row.original.dni)}>
                                                     <span className='glyphicon glyphicon-remove '></span>
@@ -161,6 +191,9 @@ class Team extends Component {
                                     ]
                                 },
                             ]}
+                            style={{
+                                height: "600px" // This will force the table body to overflow and scroll, since there is not enough room
+                            }}
                             defaultPageSize={10}
                             className="-striped -highlight"
                         />
@@ -213,10 +246,13 @@ class Team extends Component {
                                 },
                             ]}
                             defaultPageSize={10}
+                            style={{
+                                height: "600px" // This will force the table body to overflow and scroll, since there is not enough room
+                            }}
                             className="-striped -highlight"
                         />
                         <ToastContainer
-                            position='bottom-left' 
+                            position='bottom-left'
                             autoClose={3000}
                             hideProgressBar={true}
                         />

@@ -84,9 +84,9 @@ class MyCalendar extends Component {
             events: [],
             newEvent: {
                 id: '',
-                start: moment(),
+                start: '',
                 type: '',
-                end: moment(),
+                end: '',
                 title: '',
                 
             },
@@ -149,41 +149,53 @@ class MyCalendar extends Component {
     }
 
     onChangeTaskStartDate(date, dateString) {
+        if (date!==null){
+            this.setState({
+                newEvent: {
+                    ...this.state.newEvent,
+                    start: new Date(date._d)
+                }
+            })
+            console.log(this.state.newEvent);
+        }else{
+            this.setState({newEvent:{...this.state.newEvent,start:''}})
+        }
 
-        this.setState({
-            newEvent: {
-                ...this.state.newEvent,
-                start: new Date(date._d)
-            }
-        })
-        console.log(this.state.newEvent);
     }
 
     onChangeTaskEndDate(date, dateString) {
-
-        this.setState({
-            newEvent: {
-                ...this.state.newEvent,
-                end: new Date(date._d)
-            }
-        })
-        console.log(this.state.newEvent);
+        if(date!==null){
+            this.setState({
+                newEvent: {
+                    ...this.state.newEvent,
+                    end: new Date(date._d)
+                }
+            })
+            console.log(this.state.newEvent);
+        }else{
+            this.setState({newEvent:{...this.state.newEvent,end:''}})
+        }
+        
     }
 
     confirmTaskDialog() {
-        this.props.saveEvent({ ...this.state.newEvent, id: Math.random() });
-        this.setState({
-            newEvent: {
-                id: '',
-                start: '',
-                type: '',
-                end: '',
-                title: ''
-            }
-        })
-
-        toast.success('Task event created successfully!!!')
-        console.log('estado final', this.state.events)
+        if(this.state.newEvent.title==='' || this.state.newEvent.start==='' || this.state.newEvent.end==='' || this.state.newEvent.end===null || this.state.newEvent.start===null){
+            alert('Formulario incompleto');
+        }else{
+            this.props.saveEvent({ ...this.state.newEvent, id: Math.random() });
+            this.setState({
+                newEvent: {
+                    id: '',
+                    start: '',
+                    type: '',
+                    end: '',
+                    title: ''
+                }
+            })
+            this.setState({showTaskModal:false});
+            toast.success('Task event created successfully!!!')
+            console.log('estado final', this.state.events)
+        }
     }
 
     /*----------------------------------------------------- */
@@ -202,25 +214,31 @@ class MyCalendar extends Component {
     /*-----------------*/
 
     onChangeWorkerStartDate(date, dateString) {
-
-        this.setState({
-            newEvent: {
-                ...this.state.newEvent,
-                start: new Date(date._d)
-            }
-        })
-        console.log(this.state.newEvent);
+        if (date!==null){
+            this.setState({
+                newEvent: {
+                    ...this.state.newEvent,
+                    start: new Date(date._d)
+                }
+            })
+            console.log(this.state.newEvent);
+        }else{
+            this.setState({newEvent:{...this.state.newEvent,start:''}})
+        }
     }
 
     onChangeWorkerEndDate(date, dateString) {
-
-        this.setState({
-            newEvent: {
-                ...this.state.newEvent,
-                end: new Date(date._d)
-            }
-        })
-        console.log(this.state.newEvent);
+        if(date!==null){
+            this.setState({
+                newEvent: {
+                    ...this.state.newEvent,
+                    end: new Date(date._d)
+                }
+            })
+            console.log(this.state.newEvent);
+        }else{
+            this.setState({newEvent:{...this.state.newEvent,end:''}})
+        }   
     }
 
     handleWorkerChange = (value) => {
@@ -244,18 +262,24 @@ class MyCalendar extends Component {
     }
 
     confirmWorkerDialog() {
-        this.props.saveEvent({ ...this.state.newEvent, id: Math.random() });
-        this.setState({
-            newEvent: {
-                id: '',
-                start: '',
-                type: '',
-                end: '',
-                title: ''
-            }
-        })
-        toast.success('Worker event created successfully!!!')
-        console.log('estado worker final ', this.state.events)
+        console.log('confirmWorkerDialog => ',this.state.newEvent)
+        if(this.state.newEvent.title==='' || this.state.newEvent.start==='' || this.state.newEvent.end==='' || this.state.newEvent.end===null){
+            alert('Formulario incompleto');
+        }else{
+            this.props.saveEvent({ ...this.state.newEvent, id: Math.random() });
+            this.setState({
+                newEvent: {
+                    id: '',
+                    start: '',
+                    type: '',
+                    end: '',
+                    title: ''
+                }
+            })
+            this.setState({showWorkerModal:false});
+            toast.success('Worker event created successfully!!!')
+            console.log('estado worker final ', this.state.events)
+        }
     }
 
     /*-------------------------------------------------*/
@@ -268,8 +292,8 @@ class MyCalendar extends Component {
         this.setState({ showEventModal: true });
         this.setState({updatedEvent:{
             title:e.title,
-            start:moment(e.start),
-            end:moment(e.end),
+            start:new Date(e.start),
+            end:new Date(e.end),
             type:e.type,
             id:e.id
         }})
@@ -277,13 +301,13 @@ class MyCalendar extends Component {
     }
 
     onChangeUpdateStartDate(date, dateString) {
-        this.setState({
-            updatedEvent: {
-                ...this.state.updatedEvent,
-                start: moment(new Date(date._d))
-            }
-        })
-        console.log('UPDATED EVENT=> ', this.state.updatedEvent);
+            this.setState({
+                updatedEvent: {
+                    ...this.state.updatedEvent,
+                    start: new Date(date._d)
+                }
+            })
+            console.log('UPDATED EVENT=> ', this.state.updatedEvent);
     }
 
     onChangeUpdateEndDate(date, dateString) {
@@ -291,7 +315,7 @@ class MyCalendar extends Component {
         this.setState({
             updatedEvent: {
                 ...this.state.updatedEvent,
-                end: moment(new Date(date._d))
+                end: new Date(date._d)
             }
         })
         console.log('UPDATED EVENT=> ', this.state.updatedEvent);
@@ -313,12 +337,13 @@ class MyCalendar extends Component {
         //console.log('evento seleccionado => ', e)
         this.props.deleteEvent(this.state.updatedEvent.id);
         this.setState({ showEventModal: false });
-        toast.error('Event deleted');
+        toast.info('Event deleted');
     }
 
     editEvent(){
         console.log('evento actualizado=> ', this.state.updatedEvent)
         this.props.changeEvent(this.state.updatedEvent);
+        this.setState({});
 
     }
 
@@ -407,10 +432,12 @@ class MyCalendar extends Component {
                                         <div className='row'>
                                             <Col xs={6}>
                                                 <label>Start date:</label>
+                                                <br/>
                                                 <DatePicker onChange={this.onChangeWorkerStartDate} />
                                             </Col>
                                             <Col xs={6}>
                                                 <label>End date: </label>&nbsp;
+                                                <br/>
                                                 <DatePicker onChange={this.onChangeWorkerEndDate} />
                                             </Col>
                                         </div>
@@ -437,6 +464,7 @@ class MyCalendar extends Component {
                             <DragAndDropCalendar
                                 eventPropGetter={this.styledEvents}
                                 selectable
+                                popup
                                 events={this.state.events}
                                 defaultDate={new Date()}
                                 onEventDrop={this.moveEvent}
@@ -458,11 +486,11 @@ class MyCalendar extends Component {
                                         </Col>
                                         <Col xs={3}>
                                             <label>Start:</label>
-                                            <DatePicker onChange={this.onChangeUpdateStartDate} value={this.state.updatedEvent.start} />
+                                            <DatePicker onChange={this.onChangeUpdateStartDate} value={moment(this.state.updatedEvent.start)} />
                                         </Col>
                                         <Col xs={3}>
                                             <label>End:</label>
-                                            <DatePicker onChange={this.onChangeUpdateEndDate} value={this.state.updatedEvent.end} />
+                                            <DatePicker onChange={this.onChangeUpdateEndDate} value={moment(this.state.updatedEvent.end)} />
                                         </Col>
                                     </div>
                                 </Modal.Body>
